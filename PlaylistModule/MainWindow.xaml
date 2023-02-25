@@ -7,6 +7,25 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        
+        <TextBlock Name="SongTitle" Grid.Row="0" Grid.ColumnSpan="3" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
+        <TextBlock Name="Offset" Grid.Row="1" Grid.Column="0" FontSize="20" Text="00:00" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <ProgressBar Name="ProgressIndicator" Grid.Column="1" Grid.Row="1" Height="10" Foreground="Black" Background="White" BorderThickness="0"/>
+        <TextBlock Name="Duration" Grid.Row="1" Grid.Column="2" FontSize="20" Text="00:00" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+        <Button Name="PlayButton" Content="Play" Grid.Row="2" Grid.Column="1" Click="OnPlayButtonClick" Visibility="Visible"/>
+        <Button Name="PauseButton" Content="Pause" Grid.Row="2" Grid.Column="1" Click="OnPauseButtonClick" Visibility="Collapsed"/>
     </Grid>
 </Window>
