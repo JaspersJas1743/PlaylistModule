@@ -7,19 +7,20 @@ namespace PlaylistModule.Utilities
 {
 	public sealed class Audio
 	{
+		private TimeSpan _audioOffset;
 		private CancellationTokenSource _tokenSource;
 		private CancellationToken _token;
-		private TimeSpan _audioOffset;
 
 		public Audio(string title, int durationInSeconds)
-			: this(title: title, duration: TimeSpan.FromSeconds(durationInSeconds))
+			: this(title: title, duration: TimeSpan.FromSeconds(value: durationInSeconds))
 		{ }
 
 		public Audio(string title, TimeSpan duration)
 		{
 			Title = title;
 			Duration = duration;
-			RefreshToken();
+			_tokenSource = new CancellationTokenSource();
+			_token = _tokenSource.Token;
 		}
 
 		public delegate void TimeTrackingEventHandler(object sender, TimeTrackingEventArgs e);
@@ -30,34 +31,35 @@ namespace PlaylistModule.Utilities
 
 		public async Task PlaySound()
 		{
-			int audioDurationInSeconds = (int)Duration.TotalSeconds;
-			int lostDurationInSeconds = (int)_audioOffset.TotalSeconds;
-			for (int currentSecond = lostDurationInSeconds; currentSecond < audioDurationInSeconds; ++currentSecond)
+			while (_audioOffset <= Duration)
 			{
-				if (_token.IsCancellationRequested)
+				try
 				{
-					_tokenSource.Dispose();
-					RefreshToken();
-					return;
+					_token.ThrowIfCancellationRequested();
+					TimeTracking?.Invoke(sender: this, e: new TimeTrackingEventArgs(offset: _audioOffset, duration: Duration));
+					await Task.Delay(millisecondsDelay: 1_000, cancellationToken: _token);
+					_audioOffset = _audioOffset.Add(ts: TimeSpan.FromSeconds(value: 1));
 				}
-
-				TimeTracking?.Invoke(sender: this, e: new TimeTrackingEventArgs(offset: _audioOffset, duration: Duration));
-				await Task.Delay(millisecondsDelay: 1_000);
-				_audioOffset = _audioOffset.Add(ts: TimeSpan.FromSeconds(value: 1));
+				catch
+				{
+					RefreshToken();
+					throw;
+				}
 			}
-			_audioOffset = TimeSpan.Zero;
+			RefreshOffset();
 		}
-
-		public async Task PauseSound()
-			=> _tokenSource.Cancel();
-
-		public override string ToString()
-			=> $"Audio {{Title={Title};Offset={_audioOffset};Duration={Duration}}}";
 
 		private void RefreshToken()
 		{
+			_tokenSource.Dispose();
 			_tokenSource = new CancellationTokenSource();
 			_token = _tokenSource.Token;
 		}
+
+		public void RefreshOffset()
+			=> _audioOffset = TimeSpan.Zero;
+
+		public void PauseSound()
+			=> _tokenSource.Cancel();
 	}
 }

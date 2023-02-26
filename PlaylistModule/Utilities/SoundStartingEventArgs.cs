@@ -4,13 +4,11 @@ namespace PlaylistModule.Utilities
 {
 	public sealed class SoundStartingEventArgs: EventArgs
 	{
-		public SoundStartingEventArgs(Audio audio, int audioIndex)
+		public SoundStartingEventArgs(Audio audio)
 		{
 			PlaylistAudio = audio;
-			AudioIndex = audioIndex;
 		}
 
 		public Audio PlaylistAudio { get; init; }
-		public int AudioIndex { get; init; }
 	}
 }

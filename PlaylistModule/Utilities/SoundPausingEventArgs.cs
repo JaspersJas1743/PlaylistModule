@@ -2,13 +2,11 @@
 {
     public class SoundPausingEventArgs
     {
-        public SoundPausingEventArgs(Audio playlistAudio, int audioIndex)
+        public SoundPausingEventArgs(Audio playlistAudio)
         {
             PlaylistAudio = playlistAudio;
-            AudioIndex = audioIndex;
         }
 
         public Audio PlaylistAudio { get; init; }
-        public int AudioIndex { get; init; }
     }
 }

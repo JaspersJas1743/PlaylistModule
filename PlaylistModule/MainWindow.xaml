@@ -4,8 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PlaylistModule"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        mc:Ignorable="d" Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -19,13 +18,18 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         
-        <TextBlock Name="SongTitle" Grid.Row="0" Grid.ColumnSpan="3" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBlock Name="SoundTitle" Grid.Row="0" Grid.ColumnSpan="3" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
-        <TextBlock Name="Offset" Grid.Row="1" Grid.Column="0" FontSize="20" Text="00:00" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        <ProgressBar Name="ProgressIndicator" Grid.Column="1" Grid.Row="1" Height="10" Foreground="Black" Background="White" BorderThickness="0"/>
-        <TextBlock Name="Duration" Grid.Row="1" Grid.Column="2" FontSize="20" Text="00:00" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBlock Name="Offset" Grid.Row="1" Grid.Column="0" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <ProgressBar Name="ProgressIndicator" Grid.Column="1" Grid.Row="1" Minimum="0" Height="10" Foreground="Black" Background="White" BorderThickness="0"/>
+        <TextBlock Name="Duration" Grid.Row="1" Grid.Column="2" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
         <Button Name="PlayButton" Content="Play" Grid.Row="2" Grid.Column="1" Click="OnPlayButtonClick" Visibility="Visible"/>
         <Button Name="PauseButton" Content="Pause" Grid.Row="2" Grid.Column="1" Click="OnPauseButtonClick" Visibility="Collapsed"/>
+
+        <Button Name="PrevSoundButton" Content="Previous" Grid.Row="2" Grid.Column="0" Click="OnPrevSoundButtonClick" Visibility="Collapsed"/>
+        <Button Name="NextSoundButton" Content="Next" Grid.Row="2" Grid.Column="2" Click="OnNextSoundButtonClick" Visibility="Collapsed"/>
+
+        <Button Name="RestartButton" Content="Начать сначала" Grid.Row="3" Grid.Column="1" Click="OnRestartButtonClick" Visibility="Collapsed"/>
     </Grid>
 </Window>
