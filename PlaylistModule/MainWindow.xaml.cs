@@ -1,25 +1,27 @@
 ﻿using PlaylistModule.Utilities;
 using System;
+using System.Linq;
+using System.Text;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace PlaylistModule
 {
 	public partial class MainWindow: Window
 	{
 		private Playlist _playlist = new Playlist();
-		private IProgress<double> _progress;
 
 		public MainWindow()
 		{
 			InitializeComponent();
 
-			_progress = new Progress<double>(handler: progress => ProgressIndicator.Value = progress);
-
-			_playlist.AddSound(GetAudio(title: "N/A - Две тысячи баксов за сигарету", duration: TimeSpan.FromSeconds(10)));
-			_playlist.AddSound(GetAudio(title: "White Punk - Дюраг", duration: TimeSpan.FromSeconds(10)));
-			_playlist.AddSound(GetAudio(title: "Платина - Биг бой абубаби", duration: TimeSpan.FromSeconds(10)));
-			_playlist.AddSound(GetAudio(title: "Кишлак - Маленький бандит", duration: TimeSpan.FromSeconds(10)));
-			_playlist.AddSound(GetAudio(title: "Кишлак - Дрочу на твои фото", duration: TimeSpan.FromSeconds(10)));
+			_playlist.AddSound(GetAudio(title: "Две тысячи баксов за сигарету", author: "Неизвестен", duration: TimeSpan.FromSeconds(10)));
+			_playlist.AddSound(GetAudio(title: "Дюраг", author: "White Punk", duration: TimeSpan.FromSeconds(10)));
+			_playlist.AddSound(GetAudio(title: "Биг бой абубаби", author: "Платина", duration: TimeSpan.FromSeconds(10)));
+			_playlist.AddSound(GetAudio(title: "Маленький бандит", author: "Кишлак", duration: TimeSpan.FromSeconds(10)));
+			_playlist.AddSound(GetAudio(title: "Дрочу на твои фото", author: "Кишлак", duration: TimeSpan.FromSeconds(10)));
 
 			_playlist.SoundStarting += OnPlaylistPlayStarting;
 			_playlist.SoundPausing += OnPlaylistSoundPausing;
@@ -29,23 +31,25 @@ namespace PlaylistModule
 			_playlist.PlaylistEnded += OnPlaylistPlaylistEnded;
 		}
 
+		private Audio GetAudio(string title, string author, TimeSpan duration)
+		{
+			Uri uri = new Uri($"{Environment.CurrentDirectory}/../../../Resources/{author} - {title}.jpg");
+			Audio audio = new Audio(title: title, author: author, duration: duration, cover: new BitmapImage(uriSource: uri));
+			audio.TimeTracking += OnAudioTimeTracking;
+			return audio;
+		}
+
 		private void OnPlaylistPlaylistEnded(object sender, PlaylistEndedEventArgs e)
 		{
-			PrevSoundButton.Visibility = Visibility.Collapsed;
-			NextSoundButton.Visibility = Visibility.Collapsed;
-			PlayButton.Visibility = Visibility.Collapsed;
-			PauseButton.Visibility = Visibility.Collapsed;
-			SoundTitle.Text = String.Empty;
-			Offset.Text = String.Empty;
-			Duration.Text = String.Empty;
+			PrevSoundButton.Visibility = NextSoundButton.Visibility = PlayButton.Visibility = PauseButton.Visibility = Visibility.Collapsed;
+			SoundTitle.Text = SoundAuthor.Text = Offset.Text = Duration.Text = String.Empty;
 			RestartButton.Visibility = Visibility.Visible;
-			_progress.Report(value: 0);
 		}
 
 		private void OnPlaylistPlaylistStarted(object sender, PlaylistStartedEventArgs e)
 		{
-			NextSoundButton.Visibility = Visibility.Visible;
-			RestartButton.Visibility = Visibility.Collapsed;
+			(NextSoundButton.Visibility, RestartButton.Visibility) = (Visibility.Visible, Visibility.Collapsed);
+			SoundProgress.Visibility = Visibility.Visible;
 		}
 
 		private void OnPlaylistBackSwitching(object sender, BackSwitchingEventArgs e)
@@ -62,13 +66,6 @@ namespace PlaylistModule
 			PrevSoundButton.Visibility = Visibility.Visible;
 		}
 
-		private Audio GetAudio(string title, TimeSpan duration)
-		{
-			Audio audio = new Audio(title: title, duration: duration);
-			audio.TimeTracking += OnAudioTimeTracking;
-			return audio;
-		}
-
 		private void OnPlaylistSoundPausing(object sender, SoundPausingEventArgs e)
 			=> (PlayButton.Visibility, PauseButton.Visibility) = (Visibility.Visible, Visibility.Collapsed);
 
@@ -77,14 +74,16 @@ namespace PlaylistModule
 			(PlayButton.Visibility, PauseButton.Visibility) = (Visibility.Collapsed, Visibility.Visible);
 
 			SoundTitle.Text = e.PlaylistAudio.Title;
+			SoundAuthor.Text = e.PlaylistAudio.Author;
 			Duration.Text = e.PlaylistAudio.Duration.ToString(format: "mm\\:ss");
-			ProgressIndicator.Maximum = e.PlaylistAudio.Duration.TotalSeconds;
+			SoundImage.Source = e.PlaylistAudio.Cover;
+			SoundProgress.MaxWidth = e.PlaylistAudio.Duration.TotalMilliseconds;
 		}
 
 		private void OnAudioTimeTracking(object sender, TimeTrackingEventArgs e)
 		{
 			Offset.Text = e.Offset.ToString(format: "mm\\:ss");
-			_progress.Report(value: e.Offset.TotalSeconds);
+			SoundProgress.Value = e.Offset.TotalSeconds;
 		}
 
 		private async void OnPlayButtonClick(object sender, RoutedEventArgs e)
@@ -101,5 +100,14 @@ namespace PlaylistModule
 
 		private async void OnRestartButtonClick(object sender, RoutedEventArgs e)
 			=> await _playlist.StartAgain();
+
+		private async void OnSoundProgressDragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+		{
+			Slider slider = (Slider)sender;
+			await _playlist.SetSoundOffset(Math.Round(slider.Value));
+		}
+
+		private void OnSoundProgressDragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
+			=> _playlist.Pause();
 	}
 }

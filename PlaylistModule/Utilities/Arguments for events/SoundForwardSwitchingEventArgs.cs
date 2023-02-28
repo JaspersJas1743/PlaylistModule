@@ -1,6 +1,8 @@
-﻿namespace PlaylistModule.Utilities
+﻿using System;
+
+namespace PlaylistModule.Utilities
 {
-	public class SoundForwardSwitchingEventArgs
+	public class SoundForwardSwitchingEventArgs: EventArgs
 	{
 		public SoundForwardSwitchingEventArgs(Audio substituteAudio, Audio changeableAudio)
 		{

@@ -4,32 +4,39 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PlaylistModule"
-        mc:Ignorable="d" Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        mc:Ignorable="d" Title="MainWindow" Height="450" Width="400">
+    <Grid Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        
-        <TextBlock Name="SoundTitle" Grid.Row="0" Grid.ColumnSpan="3" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
-        <TextBlock Name="Offset" Grid.Row="1" Grid.Column="0" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        <ProgressBar Name="ProgressIndicator" Grid.Column="1" Grid.Row="1" Minimum="0" Height="10" Foreground="Black" Background="White" BorderThickness="0"/>
-        <TextBlock Name="Duration" Grid.Row="1" Grid.Column="2" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBlock Name="SoundTitle" Grid.Row="1" Grid.ColumnSpan="3" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Top" />
+        <TextBlock Name="SoundAuthor" Grid.Row="1" Grid.ColumnSpan="3" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="26" />
 
-        <Button Name="PlayButton" Content="Play" Grid.Row="2" Grid.Column="1" Click="OnPlayButtonClick" Visibility="Visible"/>
-        <Button Name="PauseButton" Content="Pause" Grid.Row="2" Grid.Column="1" Click="OnPauseButtonClick" Visibility="Collapsed"/>
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" CornerRadius="10">
+            <Image Name="SoundImage" Height="auto" Width="auto"/>
+        </Border>
 
-        <Button Name="PrevSoundButton" Content="Previous" Grid.Row="2" Grid.Column="0" Click="OnPrevSoundButtonClick" Visibility="Collapsed"/>
-        <Button Name="NextSoundButton" Content="Next" Grid.Row="2" Grid.Column="2" Click="OnNextSoundButtonClick" Visibility="Collapsed"/>
+        <TextBlock Name="Offset" Grid.Row="2" Grid.Column="0" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
-        <Button Name="RestartButton" Content="Начать сначала" Grid.Row="3" Grid.Column="1" Click="OnRestartButtonClick" Visibility="Collapsed"/>
+        <Slider Name="SoundProgress" Grid.Column="1" Grid.Row="2" IsSelectionRangeEnabled="True" Thumb.DragStarted="OnSoundProgressDragStarted" Visibility="Collapsed" Thumb.DragCompleted="OnSoundProgressDragCompleted"/>
+        <TextBlock Name="Duration" Grid.Row="2" Grid.Column="2" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+        <Button Name="PlayButton" Content="Play" Grid.Row="3" Grid.Column="1" Click="OnPlayButtonClick" Visibility="Visible"/>
+        <Button Name="PauseButton" Content="Pause" Grid.Row="3" Grid.Column="1" Click="OnPauseButtonClick" Visibility="Collapsed"/>
+
+        <Button Name="PrevSoundButton" Content="Previous" Grid.Row="3" Grid.Column="0" Click="OnPrevSoundButtonClick" Visibility="Collapsed"/>
+        <Button Name="NextSoundButton" Content="Next" Grid.Row="3" Grid.Column="2" Click="OnNextSoundButtonClick" Visibility="Collapsed"/>
+
+        <Button Name="RestartButton" Content="Начать сначала" Grid.Row="2" Grid.Column="1" Click="OnRestartButtonClick" Visibility="Collapsed"/>
     </Grid>
 </Window>

@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace PlaylistModule.Utilities
 {
-	public class Playlist
+	public class Playlist: IEnumerable<Audio>
 	{
 		private CancellationTokenSource _tokenSource;
 		private CancellationToken _token;
@@ -44,11 +47,7 @@ namespace PlaylistModule.Utilities
 				if (!Enumerable.Range(start: 0, count: Length).Contains(value: index))
 					throw new ArgumentOutOfRangeException();
 
-				PlaylistAudio audio = _first;
-				for (int i = 0; i < index; ++i)
-					audio = audio.Next;
-
-				return audio.Value;
+				return this.ElementAt(index);
 			}
 		}
 
@@ -81,11 +80,12 @@ namespace PlaylistModule.Utilities
 			{
 				try
 				{
-					Audio audio = this[_indexOfCurrentSound];
+					Audio audio = this[index: index];
 					SoundStarting?.Invoke(sender: this, e: new SoundStartingEventArgs(audio: audio));
 					await audio.PlaySound();
 					_indexOfCurrentSound = index;
 					_token.ThrowIfCancellationRequested();
+					ForwardSwitching?.Invoke(sender: this, e: new ForwardSwitchingEventArgs(isLast: index + 1 == Length - 1));
 				}
 				catch
 				{
@@ -142,5 +142,28 @@ namespace PlaylistModule.Utilities
 			_indexOfCurrentSound = 0;
 			await Play();
 		}
+
+		public async Task SetSoundOffset(double offsetInSeconds)
+			=> await SetSoundOffset(newOffset: TimeSpan.FromSeconds(value: offsetInSeconds));
+
+		public async Task SetSoundOffset(TimeSpan newOffset)
+		{
+			Pause();
+			this[index: _indexOfCurrentSound].Offset = newOffset;
+			await Play();
+		}
+
+		public IEnumerator<Audio> GetEnumerator()
+		{
+			PlaylistAudio node = _first;
+			while (node is not null)
+			{
+				yield return node.Value;
+				node = node.Next;
+			}
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+			=> this.GetEnumerator();
 	}
 }

@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace PlaylistModule.Utilities
 {
 	public sealed class Audio
 	{
-		private TimeSpan _audioOffset;
 		private CancellationTokenSource _tokenSource;
 		private CancellationToken _token;
 
-		public Audio(string title, int durationInSeconds)
-			: this(title: title, duration: TimeSpan.FromSeconds(value: durationInSeconds))
+		public Audio(string title, string author, int durationInSeconds, BitmapImage cover)
+			: this(title: title, author: author, duration: TimeSpan.FromSeconds(value: durationInSeconds), cover: cover)
 		{ }
 
-		public Audio(string title, TimeSpan duration)
+		public Audio(string title, string author, TimeSpan duration, BitmapImage cover)
 		{
+			Author = String.IsNullOrEmpty(author) ? "Неизвестен" : author;
 			Title = title;
 			Duration = duration;
+			Cover = cover;
 			_tokenSource = new CancellationTokenSource();
 			_token = _tokenSource.Token;
 		}
@@ -26,19 +27,22 @@ namespace PlaylistModule.Utilities
 		public delegate void TimeTrackingEventHandler(object sender, TimeTrackingEventArgs e);
 		public event TimeTrackingEventHandler TimeTracking;
 
+		public string Author { get; init; }
 		public string Title { get; init; }
 		public TimeSpan Duration { get; init; }
+		public BitmapImage Cover { get; init; }
+		public TimeSpan Offset { get; set; }
 
 		public async Task PlaySound()
 		{
-			while (_audioOffset <= Duration)
+			while (Offset <= Duration)
 			{
 				try
 				{
 					_token.ThrowIfCancellationRequested();
-					TimeTracking?.Invoke(sender: this, e: new TimeTrackingEventArgs(offset: _audioOffset, duration: Duration));
+					TimeTracking?.Invoke(sender: this, e: new TimeTrackingEventArgs(offset: Offset, duration: Duration));
 					await Task.Delay(millisecondsDelay: 1_000, cancellationToken: _token);
-					_audioOffset = _audioOffset.Add(ts: TimeSpan.FromSeconds(value: 1));
+					Offset = Offset.Add(ts: TimeSpan.FromSeconds(value: 1));
 				}
 				catch
 				{
@@ -57,7 +61,7 @@ namespace PlaylistModule.Utilities
 		}
 
 		public void RefreshOffset()
-			=> _audioOffset = TimeSpan.Zero;
+			=> Offset = TimeSpan.Zero;
 
 		public void PauseSound()
 			=> _tokenSource.Cancel();

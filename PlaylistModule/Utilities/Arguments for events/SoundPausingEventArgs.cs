@@ -1,6 +1,8 @@
-﻿namespace PlaylistModule.Utilities
+﻿using System;
+
+namespace PlaylistModule.Utilities
 {
-    public class SoundPausingEventArgs
+    public class SoundPausingEventArgs: EventArgs
     {
         public SoundPausingEventArgs(Audio playlistAudio)
         {
