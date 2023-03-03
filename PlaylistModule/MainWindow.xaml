@@ -3,10 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PlaylistModule"
-        mc:Ignorable="d" Title="MainWindow" Height="450" Width="400">
-    <Grid Name="MainGrid">
+        xmlns:local="clr-namespace:PlaylistModule" WindowStyle="None" ResizeMode="CanResize"
+        mc:Ignorable="d" Title="MainWindow" Height="450" Width="400" Icon="/Resources/Icon.png" >
+    <Grid Name="MainGrid" Style="{DynamicResource MyGrid}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
             <RowDefinition/>
             <RowDefinition Height="70"/>
             <RowDefinition Height="50"/>
@@ -19,24 +20,50 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Name="SoundTitle" Grid.Row="1" Grid.ColumnSpan="3" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Top" />
-        <TextBlock Name="SoundAuthor" Grid.Row="1" Grid.ColumnSpan="3" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="26" />
+        <Button Style="{DynamicResource MyExit}" Click="OnExitButtonClick" Grid.Column="2"/>
+        <Button Style="{DynamicResource MyDeactivate}" Click="OnDeactivateButtonClick" Grid.Column="2" Margin="0 0 20 0"/>
+        
+        <TextBlock Style="{DynamicResource MyTextBlock}" Name="SoundTitle" Grid.Row="2" Grid.ColumnSpan="3" FontSize="20" VerticalAlignment="Top" />
+        <TextBlock Style="{DynamicResource MyTextBlock}" Name="SoundAuthor" Grid.Row="2" Grid.ColumnSpan="3" FontSize="16" VerticalAlignment="Bottom" Height="26" />
 
-        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" CornerRadius="10">
-            <Image Name="SoundImage" Height="auto" Width="auto"/>
-        </Border>
+        <Image Name="SoundImage" Height="auto" Width="auto" Grid.ColumnSpan="3" Grid.Row="1" Grid.Column="0"/>
 
-        <TextBlock Name="Offset" Grid.Row="2" Grid.Column="0" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBlock Style="{DynamicResource MyTextBlock}" Name="Offset" Grid.Row="3" Grid.Column="0" FontSize="16" VerticalAlignment="Center" />
 
-        <Slider Name="SoundProgress" Grid.Column="1" Grid.Row="2" IsSelectionRangeEnabled="True" Thumb.DragStarted="OnSoundProgressDragStarted" Visibility="Collapsed" Thumb.DragCompleted="OnSoundProgressDragCompleted"/>
-        <TextBlock Name="Duration" Grid.Row="2" Grid.Column="2" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <Slider Style="{DynamicResource MySlider}" Name="SoundProgress" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" IsSelectionRangeEnabled="True" Thumb.DragStarted="OnSoundProgressDragStarted" Visibility="Collapsed" Thumb.DragCompleted="OnSoundProgressDragCompleted"/>
+        <TextBlock Style="{DynamicResource MyTextBlock}" Name="Duration" Grid.Row="3" Grid.Column="2" FontSize="16" VerticalAlignment="Center"/>
 
-        <Button Name="PlayButton" Content="Play" Grid.Row="3" Grid.Column="1" Click="OnPlayButtonClick" Visibility="Visible"/>
-        <Button Name="PauseButton" Content="Pause" Grid.Row="3" Grid.Column="1" Click="OnPauseButtonClick" Visibility="Collapsed"/>
+        <Button Style="{DynamicResource MyButton}" Name="PlayButton" Grid.Row="4" Grid.Column="1" Click="OnPlayButtonClick" Visibility="Visible">
+            <Button.ToolTip>
+                <ToolTip Style="{DynamicResource MyToolTip}" Content="Воспроизвести аудиозапись" Width="176"/>
+            </Button.ToolTip>
+            <Image Source="/Resources/ButtonImages/PlayButton.jpg"/>
+        </Button>
+        <Button Style="{DynamicResource MyButton}" Name="PauseButton" Grid.Row="4" Grid.Column="1" Click="OnPauseButtonClick" Visibility="Collapsed">
+            <Button.ToolTip>
+                <ToolTip Style="{DynamicResource MyToolTip}" Content="Приостановить аудиозапись" Width="174"/>
+            </Button.ToolTip>
+            <Image Source="/Resources/ButtonImages/PauseButton.jpg"/>
+        </Button>
 
-        <Button Name="PrevSoundButton" Content="Previous" Grid.Row="3" Grid.Column="0" Click="OnPrevSoundButtonClick" Visibility="Collapsed"/>
-        <Button Name="NextSoundButton" Content="Next" Grid.Row="3" Grid.Column="2" Click="OnNextSoundButtonClick" Visibility="Collapsed"/>
+        <Button Style="{DynamicResource MyButton}" Name="PrevSoundButton" Grid.Row="4" Grid.Column="0" Click="OnPrevSoundButtonClick" Visibility="Collapsed" HorizontalAlignment="Right">
+            <Button.ToolTip>
+                <ToolTip Style="{DynamicResource MyToolTip}" Content="Перейти к предыдущей аудиозаписи" Width="220"/>
+            </Button.ToolTip>
+            <Image Source="/Resources/ButtonImages/PreviousButton.jpg"/>
+        </Button>
+        <Button Style="{DynamicResource MyButton}" Name="NextSoundButton" Grid.Row="4" Grid.Column="2" Click="OnNextSoundButtonClick" Visibility="Collapsed" HorizontalAlignment="Left">
+            <Button.ToolTip>
+                <ToolTip Style="{DynamicResource MyToolTip}" Content="Перейти к следующей аудиозаписи" Width="215"/>
+            </Button.ToolTip>
+            <Image Source="/Resources/ButtonImages/NextButton.jpg"/>
+        </Button>
 
-        <Button Name="RestartButton" Content="Начать сначала" Grid.Row="2" Grid.Column="1" Click="OnRestartButtonClick" Visibility="Collapsed"/>
+        <Button Style="{DynamicResource MyButton}" Name="RestartButton" Grid.Row="3" Grid.Column="1" Click="OnRestartButtonClick" Visibility="Collapsed">
+            <Button.ToolTip>
+                <ToolTip Style="{DynamicResource MyToolTip}" Content="Воспроизвести сначала" Width="148"/>
+            </Button.ToolTip>
+            <Image Source="/Resources/ButtonImages/RestartButton.jpg"/>
+        </Button>
     </Grid>
 </Window>

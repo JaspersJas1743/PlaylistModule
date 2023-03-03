@@ -7,4 +7,22 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Resources\ButtonImages\NextButton.jpg" />
+    <None Remove="Resources\ButtonImages\PauseButton.png" />
+    <None Remove="Resources\ButtonImages\PreviousButton.jpg" />
+    <None Remove="Resources\ButtonImages\PreviousButton.png" />
+    <None Remove="Resources\ButtonImages\RestartButton.jpg" />
+    <None Remove="Resources\Icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\ButtonImages\NextButton.jpg" />
+    <Resource Include="Resources\ButtonImages\PauseButton.jpg" />
+    <Resource Include="Resources\ButtonImages\PlayButton.jpg" />
+    <Resource Include="Resources\ButtonImages\PreviousButton.jpg" />
+    <Resource Include="Resources\ButtonImages\RestartButton.jpg" />
+    <Resource Include="Resources\Icon.png" />
+  </ItemGroup>
+
 </Project>

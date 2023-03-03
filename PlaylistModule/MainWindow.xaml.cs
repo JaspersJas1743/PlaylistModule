@@ -1,10 +1,7 @@
 ﻿using PlaylistModule.Utilities;
 using System;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace PlaylistModule
@@ -21,7 +18,7 @@ namespace PlaylistModule
 			_playlist.AddSound(GetAudio(title: "Дюраг", author: "White Punk", duration: TimeSpan.FromSeconds(10)));
 			_playlist.AddSound(GetAudio(title: "Биг бой абубаби", author: "Платина", duration: TimeSpan.FromSeconds(10)));
 			_playlist.AddSound(GetAudio(title: "Маленький бандит", author: "Кишлак", duration: TimeSpan.FromSeconds(10)));
-			_playlist.AddSound(GetAudio(title: "Дрочу на твои фото", author: "Кишлак", duration: TimeSpan.FromSeconds(10)));
+			_playlist.AddSound(GetAudio(title: "Утонуть", author: "тринадцать карат", duration: TimeSpan.FromSeconds(10)));
 
 			_playlist.SoundStarting += OnPlaylistPlayStarting;
 			_playlist.SoundPausing += OnPlaylistSoundPausing;
@@ -33,7 +30,7 @@ namespace PlaylistModule
 
 		private Audio GetAudio(string title, string author, TimeSpan duration)
 		{
-			Uri uri = new Uri($"{Environment.CurrentDirectory}/../../../Resources/{author} - {title}.jpg");
+			Uri uri = new Uri($"{Environment.CurrentDirectory}/../../../Resources/SoundCovers/{author} - {title}.jpg");
 			Audio audio = new Audio(title: title, author: author, duration: duration, cover: new BitmapImage(uriSource: uri));
 			audio.TimeTracking += OnAudioTimeTracking;
 			return audio;
@@ -41,7 +38,7 @@ namespace PlaylistModule
 
 		private void OnPlaylistPlaylistEnded(object sender, PlaylistEndedEventArgs e)
 		{
-			PrevSoundButton.Visibility = NextSoundButton.Visibility = PlayButton.Visibility = PauseButton.Visibility = Visibility.Collapsed;
+			PrevSoundButton.Visibility = NextSoundButton.Visibility = PlayButton.Visibility = PauseButton.Visibility = SoundProgress.Visibility = SoundImage.Visibility = Visibility.Collapsed;
 			SoundTitle.Text = SoundAuthor.Text = Offset.Text = Duration.Text = String.Empty;
 			RestartButton.Visibility = Visibility.Visible;
 		}
@@ -109,5 +106,11 @@ namespace PlaylistModule
 
 		private void OnSoundProgressDragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
 			=> _playlist.Pause();
+
+		private void OnExitButtonClick(object sender, RoutedEventArgs e)
+			=> Application.Current.Shutdown();
+
+		private void OnDeactivateButtonClick(object sender, RoutedEventArgs e)
+			=> WindowState = WindowState.Minimized;
 	}
 }
